@@ -34,6 +34,8 @@ print("Min value:", minimum_value)
 print("Max value:", maximum_value)
 print("average:", average)
 
+# book
+# number formatting from https://www.bing.com/search?q=python+string+format+number+decimal+places&cvid=c321953d925a4c3f99ca309d2a4eff65&aqs=edge.0.0j69i57.8149j0j1&pglt=43&FORM=ANNTA1&PC=W000
 print("Min: {:d} - max: {:d} - average: {:.2f}".format(
     min(list_of_numbers), max(list_of_numbers), sum(list_of_numbers) / len(list_of_numbers)))
 
