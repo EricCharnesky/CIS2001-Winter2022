@@ -1,3 +1,8 @@
+from TaxableItem import TaxableItem
+from Item import Item
+from Square import Square
+from Rectangle import Rectangle
+
 class SprayBottle:
 
     def __init__(self, max_volume_in_milliliters ):
@@ -54,4 +59,19 @@ if __name__ == '__main__':
         print('you sprayed some bleach')
         result = bleach.spray()
     print("the bottle is empty")
+
+
+    apples = Item("Apples", 1.00, 42)
+
+    cost = apples.buy(10)
+    print(cost)
+
+    ramen = TaxableItem("Ramen Noodles", .19, 100, .06)
+
+    cost = ramen.buy(20)
+    print(cost)
+
+    small_square = Square(4)
+    small_rectangle = Rectangle(10, 2)
+
 
