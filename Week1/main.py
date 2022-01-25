@@ -57,7 +57,7 @@ else:
     grade = input()
     gradebook[name.lower()] = grade
 
-for key in gradebook:
+for key in list(gradebook.keys()):
     grade = gradebook[key]
     gradebook.pop(key)
     gradebook[key.lower()] = grade
