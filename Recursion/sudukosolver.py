@@ -14,22 +14,16 @@ class SudokoSolver:
         return "\n".join(str(row) for row in self.board)
 
     def solve(self):
-        print(self)
-        print(self.row_index, self.column_index)
-        if self.row_index > 8:
-            print(self)
+        # print(self) - had for debugging
+        # print(self.row_index, self.column_index)
 
         if self._is_unsolved():
-            # FIXME this, if the space is taken, advance row/col
             if self.board[self.row_index][self.column_index] == " ":
                 for number in range(1, 10):
                     number = str(number)
                     if self._can_place(number, self.row_index, self.column_index):
                         self.board[self.row_index][self.column_index] = number
-                        self.column_index += 1
-                        if self.column_index > 8:
-                            self.column_index = 0
-                            self.row_index += 1
+                        self._advance_row_column()
                         self.solve()
                         if self._is_unsolved():  # undo because it was a dead end
                             self.column_index -= 1
@@ -38,8 +32,17 @@ class SudokoSolver:
                                 self.row_index -= 1
                             self.board[self.row_index][self.column_index] = " "
 
+            else:
+                self._advance_row_column()
+
+    def _advance_row_column(self):
+        self.column_index += 1
+        if self.column_index > 8:
+            self.column_index = 0
+            self.row_index += 1
+
     def _can_place_in_row(self, number, row_index):
-        return number not in self.board[row_index]
+        return row_index < len(self.board) and number not in self.board[row_index]
 
     def _can_place_in_column(self, number, column_index):
         for row in self.board:
