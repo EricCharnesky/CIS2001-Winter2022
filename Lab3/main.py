@@ -13,31 +13,6 @@ class KnightsTour:
                 self.board[row].append(KnightsTour.EMPTY)
         self.solve(row, column)
 
-    def can_move_to(self, row, column):
-        return 0 <= row < len(self.board)  \
-            and 0 <= column < len(self.board) \
-            and self.board[row][column] == KnightsTour.EMPTY \
-            and not self.solved
-
-    def solve(self, row, column):
-        self.current_move += 1
-        self.board[row][column] = self.current_move
-
-        if self.current_move == len(self.board)**2:
-            self.solved = True
-            return
-
-        positions = [Position(self, row+jump[0], column+jump[1]) for jump in KnightsTour.JUMPS ]
-        positions.sort()
-        for position in positions:
-            if self.can_move_to(position.row, position.col):
-                self.solve(position.row, position.col)
-
-        if self.solved:
-            return
-        self.current_move -= 1
-        self.board[row][column] = KnightsTour.EMPTY
-
     def __str__(self):
         return "\n".join(str(row) for row in self._board)
 
@@ -80,8 +55,6 @@ class Position:
         for jump in KnightsTour.JUMPS:
             if self.knights_tour.can_move_to(self.row+jump[0], self.col+jump[1]):
                 moves += 1
-        return moves
-
         return moves
 
     def __lt__(self, other):
