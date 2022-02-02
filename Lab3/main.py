@@ -1,16 +1,15 @@
 class KnightsTour:
 
     EMPTY = ' '
-    JUMPS = ((2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (1, -2), (-1, 2), (-1, -2))
+    POSSIBLE_MOVES = ((2, 1), (2, -1), (-2, 1), (-2, -1), (1, 2), (1, -2), (-1, 2), (-1, -2))
 
     def __init__(self, row = 0, column = 0):
-        self.current_move = 0
-        self.solved = False
-        self.board = []
+        self._current_step = 0
+        self._board = []
         for row in range(8):
-            self.board.append([])
+            self._board.append([])
             for square in range(8):
-                self.board[row].append(KnightsTour.EMPTY)
+                self._board[row].append(KnightsTour.EMPTY)
         self.solve(row, column)
 
     def __str__(self):
@@ -52,7 +51,7 @@ class Position:
 
     def valid_moves(self):
         moves = 0
-        for jump in KnightsTour.JUMPS:
+        for jump in KnightsTour.POSSIBLE_MOVES:
             if self.knights_tour.can_move_to(self.row+jump[0], self.col+jump[1]):
                 moves += 1
         return moves
