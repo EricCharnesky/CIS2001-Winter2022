@@ -97,8 +97,11 @@ class FasterQueueButMoreMemory:
 
 class CircularQueue:
 
+
+    _MINIMUM_SIZE = 10
+
     def __init__(self):
-        self._data = [None] * 10
+        self._data = [None] * CircularQueue._MINIMUM_SIZE
         self._front_index = 0
         self._back_index = 0
 
@@ -122,6 +125,10 @@ class CircularQueue:
         self._front_index += 1
         if self._front_index == len(self._data):
             self._front_index = 0
+
+            # 10 becomes the minimum size
+        if CircularQueue._MINIMUM_SIZE < len(self) * 4 < len(self._data):
+            self._resize_smaller()
         return item
 
     # O(1)
@@ -154,6 +161,31 @@ class CircularQueue:
         self._front_index = 0
         self._back_index = new_index
 
+# O(n)
+    def _resize_smaller(self):
+        new_data = [None] * ( len(self._data) // 2 )
+        # new_index = 0
+        # if self._back_index > self._front_index:
+        #     for index in range(self._front_index, self._back_index):
+        #         new_data[new_index] = self._data[index]
+        #         new_index += 1
+        # else:
+        #     for index in range(self._front_index, len(self._data)):
+        #         new_data[new_index] = self._data[index]
+        #         new_index += 1
+        #     for index in range(0, self._back_index):
+        #         new_data[new_index] = self._data[index]
+        #         new_index += 1
+
+
+        for index in range(len(self)):
+            new_data[index] = self._data[( self._front_index + index ) % len(self._data)]
+
+        number_of_items = len(self)
+        self._data = new_data
+        self._front_index = 0
+        self._back_index = number_of_items
+
 
 queue = CircularQueue()
 
@@ -161,7 +193,7 @@ for number in range(100):
     #print('size:', sys.getsizeof(queue._data))
     queue.enqueue(number)
 
-for number in range(50):
+for number in range(65):
     print(queue.dequeue())
 
 for number in range(100, 200):
@@ -169,3 +201,4 @@ for number in range(100, 200):
 
 while not queue.is_empty():
     print(queue.dequeue())
+
