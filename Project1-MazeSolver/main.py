@@ -62,20 +62,22 @@ class MazeSolver:
         result += f'{self._current_steps} steps\n'
         return result
 
-maze = [
-    ['S', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W', ' '],
-    ['W', 'W', ' ', 'W', ' ', ' ', 'W', 'W', 'W', ' '],
-    [' ', ' ', ' ', 'W', ' ', ' ', 'W', ' ', ' ', ' '],
-    [' ', 'W', ' ', 'W', ' ', ' ', 'W', ' ', 'W', ' '],
-    [' ', 'W', ' ', ' ', ' ', ' ', ' ', ' ', 'W', ' '],
-    [' ', 'W', ' ', 'W', 'W', 'W', 'W', ' ', 'W', ' '],
-    [' ', ' ', ' ', 'W', ' ', ' ', 'W', ' ', 'W', ' '],
-    [' ', 'W', ' ', 'W', ' ', ' ', 'W', ' ', 'W', ' '],
-    [' ', 'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'E']
-]
 
-solver = MazeSolver(maze)
-print(solver.shortest_path())
+if __name__ == '__main__':
+    maze = [
+        ['S', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'W', ' '],
+        ['W', 'W', ' ', 'W', ' ', ' ', 'W', 'W', 'W', ' '],
+        [' ', ' ', ' ', 'W', ' ', ' ', 'W', ' ', ' ', ' '],
+        [' ', 'W', ' ', 'W', ' ', ' ', 'W', ' ', 'W', ' '],
+        [' ', 'W', ' ', ' ', ' ', ' ', ' ', ' ', 'W', ' '],
+        [' ', 'W', ' ', 'W', 'W', 'W', 'W', ' ', 'W', ' '],
+        [' ', ' ', ' ', 'W', ' ', ' ', 'W', ' ', 'W', ' '],
+        [' ', 'W', ' ', 'W', ' ', ' ', 'W', ' ', 'W', ' '],
+        [' ', 'W', ' ', ' ', ' ', ' ', ' ', ' ', ' ', 'E']
+    ]
 
-for solution in solver._steps_per_solution.values():
-    print(solution)
+    solver = MazeSolver(maze)
+    print(solver.shortest_path())
+
+    #for solution in solver._steps_per_solution.values():
+    #    print(solution)
