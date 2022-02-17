@@ -314,6 +314,113 @@ class CircularDoublyLinkedListDeque:
             self.next = next
             self.previous = previous
 
+class CircularDoublyLinkedList:
+
+    def __init__(self):
+        self._start = CircularDoublyLinkedList.Node(None)
+        self._start.previous = self._start
+        self._start.next = self._start
+        self._number_of_items = 0
+
+    def _add_node(self, data, next, previous):
+        new_node = CircularDoublyLinkedList.Node(data, next, previous)
+        new_node.next.previous = new_node
+        new_node.previous.next = new_node
+        self._number_of_items += 1
+
+    # O(1) always - never is resizing like an array based list
+    def append(self, data):
+        self._add_node(data, self._start, self._start.previous)
+
+    # O(n-index) ~ O(n)
+    def __getitem__(self, index):
+        self.validate_index(index)
+
+        current_index = 0
+        current_node = self._start.next
+
+        while current_index < index:
+            current_node = current_node.next
+            current_index += 1
+
+        return current_node.data
+
+    # O(n-index) ~ O(n)
+    def __setitem__(self, index, value):
+        self.validate_index(index)
+
+        current_index = 0
+        current_node = self._start.next
+
+        while current_index < index:
+            current_node = current_node.next
+            current_index += 1
+
+        old_data = current_node.data
+        current_node.data = value
+        return old_data
+
+    # O(n-index) ~ O(n)
+    def insert(self, index, data):
+        self.validate_index(index)
+
+        current_index = 0
+        current_node = self._start.next
+
+        # fun optimization - look at skip lists later
+        # see if index is closer to 0 or closer to len(self)
+        # if it is closer to 0, start at start.next and go forwards
+        # if it is closer to len(self), start at start.previous and go backwards
+
+        while current_index < index:
+            current_node = current_node.next
+            current_index += 1
+
+        self._add_node(data, current_node, current_node.previous)
+
+    def validate_index(self, index):
+        if index < 0 or index >= len(self):
+            raise IndexError
+
+    #O(n-index) ~ O(n)
+    def pop(self, index=None):
+        if index is None:
+            return self._remove_node(self._start.previous)
+
+        self.validate_index(index)
+
+        current_index = 0
+        current_node = self._start.next
+
+        while current_index < index:
+            current_node = current_node.next
+            current_index += 1
+
+        return self._remove_node(current_node)
+
+    def _remove_node(self, node):
+        if self.is_empty():
+            raise IndexError
+
+        node.next.previous = node.previous
+        node.previous.next = node.next
+        self._number_of_items -= 1
+
+        return node.data
+
+    def is_empty(self):
+        return self._number_of_items == 0
+
+    def __len__(self):
+        return self._number_of_items
+
+    class Node:
+
+        def __init__(self, data, next=None, previous=None):
+            self.data = data
+            self.next = next
+            self.previous = previous
+
 
 linked_list = LinkedListStack()
 for number in range(10):
@@ -342,3 +449,15 @@ for number in range(6, 10):
 while not linked_list_deque.is_empty():
     print(linked_list_deque.remove_front())
     print(linked_list_deque.remove_back())
+
+
+linked_list = CircularDoublyLinkedList()
+
+for number in range(10):
+    linked_list.append(number)
+
+for index in range(len(linked_list)):
+    linked_list[index] = index * 2 # call __setitem__
+
+for index in range(len(linked_list)):
+    print(linked_list[index]) # call __getitem__
