@@ -314,6 +314,7 @@ class CircularDoublyLinkedListDeque:
             self.next = next
             self.previous = previous
 
+
 class CircularDoublyLinkedList:
 
     def __init__(self):
@@ -420,6 +421,216 @@ class CircularDoublyLinkedList:
             self.data = data
             self.next = next
             self.previous = previous
+
+
+class PositionalLinkedList:
+
+    class Position:
+
+        def __init__(self, container, node):
+            self.container = container
+            self.node = node
+
+        def data(self):
+            return self.node.data
+
+        def __eq__(self, other):
+            return type(other) is type(self) and other.node is self.node
+
+        def __ne__(self, other):
+            return not (self == other)
+
+    def _validate(self, p):
+        if not isinstance(p, self.Position):
+            raise TypeError()
+        if p.container is not self:
+            raise ValueError()
+        if p.node.next is None:  # convention for deprecated nodes
+            raise ValueError()
+        return p.node
+
+    def _make_position(self, node):
+        if node is self._start:
+            return None
+        return self.Position(self, node)
+
+    def first(self):
+        return self._make_position(self._start.next)
+
+    def last(self):
+        return self._make_position(self._start.previous)
+
+    def after(self, position):
+        node = self._validate(position)
+        return self._make_position(node.next)
+
+    def before(self, position):
+        node = self._validate(position)
+        return self._make_position(node.previous)
+
+    def __iter__(self):
+        current = self.first()
+        while current is not None:
+            yield current.data()
+            current = self.after(current)
+
+    def __init__(self):
+        self._start = CircularDoublyLinkedList.Node(None)
+        self._start.previous = self._start
+        self._start.next = self._start
+        self._number_of_items = 0
+
+    def _add_node(self, data, next, previous):
+        new_node = CircularDoublyLinkedList.Node(data, next, previous)
+        new_node.next.previous = new_node
+        new_node.previous.next = new_node
+        self._number_of_items += 1
+
+    # O(1)
+    def add_before(self, position, data):
+        node = self._validate(position)
+        self._add_node(data, node, node.previous)
+
+    # O(1)
+    def add_after(self, position, data):
+        node = self._validate(position)
+        self._add_node(data, node.next, node)
+
+    # O(1)
+    def replace(self, position, data):
+        node = self._validate(position)
+        old_data = node.data
+        node.data = data
+        return old_data
+
+    # O(1)
+    def delete(self, position):
+        node = self._validate(position)
+        return self._remove_node(node)
+
+    # O(1) always - never is resizing like an array based list
+    def add_first(self, data):
+        self._add_node(data, self._start.next, self._start)
+
+    # O(1) always - never is resizing like an array based list
+    def append(self, data):
+        self._add_node(data, self._start, self._start.previous)
+
+    # O(n-index) ~ O(n)
+    def __getitem__(self, index):
+        self.validate_index(index)
+
+        current_index = 0
+        current_node = self._start.next
+
+        while current_index < index:
+            current_node = current_node.next
+            current_index += 1
+
+        return current_node.data
+
+    # O(n-index) ~ O(n)
+    def __setitem__(self, index, value):
+        self.validate_index(index)
+
+        current_index = 0
+        current_node = self._start.next
+
+        while current_index < index:
+            current_node = current_node.next
+            current_index += 1
+
+        old_data = current_node.data
+        current_node.data = value
+        return old_data
+
+    # O(n-index) ~ O(n)
+    def insert(self, index, data):
+        self.validate_index(index)
+
+        current_index = 0
+        current_node = self._start.next
+
+        # fun optimization - look at skip lists later
+        # see if index is closer to 0 or closer to len(self)
+        # if it is closer to 0, start at start.next and go forwards
+        # if it is closer to len(self), start at start.previous and go backwards
+
+        while current_index < index:
+            current_node = current_node.next
+            current_index += 1
+
+        self._add_node(data, current_node, current_node.previous)
+
+    def validate_index(self, index):
+        if index < 0 or index >= len(self):
+            raise IndexError
+
+    #O(n-index) ~ O(n)
+    def pop(self, index=None):
+        if index is None:
+            return self._remove_node(self._start.previous)
+
+        self.validate_index(index)
+
+        current_index = 0
+        current_node = self._start.next
+
+        while current_index < index:
+            current_node = current_node.next
+            current_index += 1
+
+        return self._remove_node(current_node)
+
+    def _remove_node(self, node):
+        if self.is_empty():
+            raise IndexError
+
+        node.next.previous = node.previous
+        node.previous.next = node.next
+        self._number_of_items -= 1
+
+        node.next = None
+        node.previous = None
+
+        return node.data
+
+    def is_empty(self):
+        return self._number_of_items == 0
+
+    def __len__(self):
+        return self._number_of_items
+
+    class Node:
+
+        def __init__(self, data, next=None, previous=None):
+            self.data = data
+            self.next = next
+            self.previous = previous
+
+
+linkedList = PositionalLinkedList()
+name = ""
+
+while name != "STOP":
+    name = input("Enter a name or STOP")
+    if name != "STOP":
+        if linkedList.is_empty():
+            linkedList.append(name)
+        else:
+            current = linkedList.first()
+            while current is not None and name > current.data():
+                current = linkedList.after(current)
+            if current is None:
+                linkedList.append(name)
+            else:
+                linkedList.add_before(current, name)
+
+
+for name in linkedList:
+    print(name)
+
+
 
 
 linked_list = LinkedListStack()
