@@ -339,7 +339,7 @@ class MinPriorityQueue:
                 if self._data[right_index] < self._data[smallest_child_index]:
                     smallest_child_index = right_index
 
-            if smallest_child_index is not None:
+            if smallest_child_index is not None and self._data[index] > self._data[smallest_child_index]:
                 temp = self._data[index]
                 self._data[index] = self._data[smallest_child_index]
                 self._data[smallest_child_index] = temp
