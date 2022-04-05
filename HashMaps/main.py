@@ -85,6 +85,9 @@ class Hashmap:
         # not ideal, but easy
         self._storage = [None] * len(self._storage) * 2
 
+        # reset back to 0 because the loop through old storage will increase the count again
+        self._number_of_items = 0
+
         for bucket in old_storage:
             if bucket is not None:
                 for item in bucket:
