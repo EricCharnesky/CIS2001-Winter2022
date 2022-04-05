@@ -76,7 +76,8 @@ class Hashmap:
         for item in self._storage[index]:
             if key == item._key:
                 value = item._value
-                self._storage.remove(item)
+                self._storage[index].remove(item)
+                self._number_of_items -= 1
                 return value
 
     def _resize(self):
@@ -134,6 +135,8 @@ crappy_dictionary[large_double_double_again] = 3.99
 
 for coffee in crappy_dictionary:
     print(coffee, ":", crappy_dictionary[coffee])
+
+del crappy_dictionary[small_black_coffee]
 
 
 
