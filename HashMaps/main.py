@@ -18,6 +18,9 @@ class Hashmap:
         
     _STARTING_CAPACITY = 10
     _LOAD_FACTOR = .75
+    _SHRINK_FACTOR = .1
+    _VALUE_TO_INCREASE_SIZE_BY = 2
+    _VALUE_TO_DECREASE_SIZE_BY = .5
     
     def __init__(self):
         self._storage = [None] * self._STARTING_CAPACITY
@@ -58,7 +61,7 @@ class Hashmap:
             self._number_of_items += 1
 
         if self._number_of_items > len(self._storage) * self._LOAD_FACTOR:
-            self._resize()
+            self._resize(self._VALUE_TO_INCREASE_SIZE_BY)
 
     def __getitem__(self, key):
         index = self._hash_function(key)
@@ -78,13 +81,17 @@ class Hashmap:
                 value = item._value
                 self._storage[index].remove(item)
                 self._number_of_items -= 1
+
+                if len(self._storage) > self._STARTING_CAPACITY and self._number_of_items <= len(self._storage) * self._SHRINK_FACTOR:
+                    self._resize(self._VALUE_TO_DECREASE_SIZE_BY)
+
                 return value
 
-    def _resize(self):
+    def _resize(self, factor):
         old_storage = self._storage
 
         # not ideal, but easy
-        self._storage = [None] * len(self._storage) * 2
+        self._storage = [None] * int(len(self._storage) * factor)
 
         # reset back to 0 because the loop through old storage will increase the count again
         self._number_of_items = 0
@@ -140,4 +147,15 @@ del crappy_dictionary[small_black_coffee]
 
 
 
+size_testing = Hashmap()
+
+for value in range(10):
+    size_testing[value] = value
+
+print(len(size_testing._storage))
+for value in range(9):
+    del size_testing[value]
+
+
+print(len(size_testing._storage))
 
